@@ -1,0 +1,23 @@
+!SESSION 2025-06-02 14:58:45.800 -----------------------------------------------
+eclipse.buildId=unknown
+java.version=1.8.0_451
+java.vendor=Oracle Corporation
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=zh_CN
+
+!ENTRY org.eclipse.osgi 4 0 2025-06-02 14:58:45.812
+!MESSAGE error loading hook: org.eclipse.virgo.kernel.equinox.extensions.hooks.ExtensionsHookConfigurator
+!STACK 0
+java.lang.ClassNotFoundException: org.eclipse.virgo.kernel.equinox.extensions.hooks.ExtensionsHookConfigurator
+	at java.net.URLClassLoader.findClass(Unknown Source)
+	at java.lang.ClassLoader.loadClass(Unknown Source)
+	at java.lang.ClassLoader.loadClass(Unknown Source)
+	at java.lang.Class.forName0(Native Method)
+	at java.lang.Class.forName(Unknown Source)
+	at org.eclipse.osgi.baseadaptor.HookRegistry.loadConfigurators(HookRegistry.java:176)
+	at org.eclipse.osgi.baseadaptor.HookRegistry.initialize(HookRegistry.java:100)
+	at org.eclipse.osgi.baseadaptor.BaseAdaptor.<init>(BaseAdaptor.java:98)
+	at org.eclipse.osgi.framework.internal.core.EquinoxLauncher.internalInit(EquinoxLauncher.java:67)
+	at org.eclipse.osgi.framework.internal.core.EquinoxLauncher.init(EquinoxLauncher.java:37)
+	at org.eclipse.osgi.launch.Equinox.init(Equinox.java:178)
+	at org.apache.karaf.main.Main.launch(Main.java:240)
+	at org.apache.karaf.main.Main.main(Main.java:167)
