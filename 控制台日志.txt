@@ -1,185 +1,126 @@
-TopologyGraph.vue:53 [Vue warn]: Property "getNodePorts" was accessed during render but is not defined on instance. 
-  at <ElFocusTrap loop="" trapped=true focus-trap-el= <div aria-modal=​"true" aria-label=​"节点详情" aria-describedby=​"el-id-2125-23" class=​"el-drawer rtl" role=​"dialog" style=​"width:​ 400px;​">​…​</div>​flex  ... > 
-  at <ElOverlay mask=true overlay-class=undefined z-index=2037  ... > 
-  at <BaseTransition onAfterEnter=fn<afterEnter> onAfterLeave=fn<afterLeave> onBeforeLeave=fn<beforeLeave>  ... > 
-  at <Transition name="el-drawer-fade" onAfterEnter=fn<afterEnter> onAfterLeave=fn<afterLeave>  ... > 
-  at <Teleport to="body" disabled=true > 
-  at <ElDrawer modelValue=true onUpdate:modelValue=fn title="节点详情"  ... > 
-  at <TopologyGraph > 
-  at <ElCard > 
-  at <Topology onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) {__v_skip: true} > > 
-  at <RouterView > 
-  at <ElMain class="main-content" > 
-  at <ElContainer > 
-  at <ElContainer class="main-layout" > 
-  at <MainLayout > 
-  at <App>
-warn$1 @ chunk-HX5C5AN6.js?v=d751604f:2123
-get @ chunk-HX5C5AN6.js?v=d751604f:5242
-（匿名） @ TopologyGraph.vue:53
-renderFnWithContext @ chunk-HX5C5AN6.js?v=d751604f:2770
-renderSlot @ chunk-HX5C5AN6.js?v=d751604f:5093
-（匿名） @ element-plus.js?v=d751604f:29771
-renderFnWithContext @ chunk-HX5C5AN6.js?v=d751604f:2770
-renderSlot @ chunk-HX5C5AN6.js?v=d751604f:5093
-_sfc_render @ element-plus.js?v=d751604f:12887
-renderComponentRoot @ chunk-HX5C5AN6.js?v=d751604f:8641
-componentUpdateFn @ chunk-HX5C5AN6.js?v=d751604f:7515
-run @ chunk-HX5C5AN6.js?v=d751604f:488
-runIfDirty @ chunk-HX5C5AN6.js?v=d751604f:526
+flow.js:101 
+            
+            
+           GET http://localhost:5173/restconf/config/opendaylight-inventory:nodes/node/openflow:1/flow-node-inventory:table/0/flow/L2switch-23 404 (Not Found)
+dispatchXhrRequest @ axios.js?v=d751604f:1648
+xhr @ axios.js?v=d751604f:1528
+dispatchRequest @ axios.js?v=d751604f:2003
+Promise.then
+_request @ axios.js?v=d751604f:2206
+request @ axios.js?v=d751604f:2115
+Axios.<computed> @ axios.js?v=d751604f:2243
+wrap @ axios.js?v=d751604f:8
+getFlowDetail @ flow.js:101
+checkFlowExists @ flow.js:133
+deleteFlow @ flow.js:147
+（匿名） @ FlowTables.vue:575
+Promise.then
+confirmDeleteFlow @ FlowTables.vue:573
+（匿名） @ FlowTables.vue:97
+cache.<computed>.cache.<computed> @ chunk-HX5C5AN6.js?v=d751604f:12229
 callWithErrorHandling @ chunk-HX5C5AN6.js?v=d751604f:2270
-flushJobs @ chunk-HX5C5AN6.js?v=d751604f:2478
-Promise.then
-queueFlush @ chunk-HX5C5AN6.js?v=d751604f:2392
-queueJob @ chunk-HX5C5AN6.js?v=d751604f:2387
-effect2.scheduler @ chunk-HX5C5AN6.js?v=d751604f:7566
-trigger @ chunk-HX5C5AN6.js?v=d751604f:516
-endBatch @ chunk-HX5C5AN6.js?v=d751604f:574
-notify @ chunk-HX5C5AN6.js?v=d751604f:834
-trigger @ chunk-HX5C5AN6.js?v=d751604f:808
-set value @ chunk-HX5C5AN6.js?v=d751604f:1680
-（匿名） @ TopologyGraph.vue:364
-_loop22 @ cytoscape.js?v=d751604f:9823
-（匿名） @ cytoscape.js?v=d751604f:9832
-forEachEventObj2 @ cytoscape.js?v=d751604f:9718
-p.emit.p.trigger @ cytoscape.js?v=d751604f:9799
-emit2 @ cytoscape.js?v=d751604f:12653
-（匿名） @ cytoscape.js?v=d751604f:9835
-forEachEventObj2 @ cytoscape.js?v=d751604f:9721
-p.emit.p.trigger @ cytoscape.js?v=d751604f:9799
-emit @ cytoscape.js?v=d751604f:9940
-triggerEvents2 @ cytoscape.js?v=d751604f:21309
-mouseupHandler @ cytoscape.js?v=d751604f:21958
-TopologyGraph.vue:364 [Vue warn]: Unhandled error during execution of render function 
-  at <ElFocusTrap loop="" trapped=true focus-trap-el= <div aria-modal=​"true" aria-label=​"节点详情" aria-describedby=​"el-id-2125-23" class=​"el-drawer rtl" role=​"dialog" style=​"width:​ 400px;​">​…​</div>​flex  ... > 
-  at <ElOverlay mask=true overlay-class=undefined z-index=2037  ... > 
-  at <BaseTransition onAfterEnter=fn<afterEnter> onAfterLeave=fn<afterLeave> onBeforeLeave=fn<beforeLeave>  ... > 
-  at <Transition name="el-drawer-fade" onAfterEnter=fn<afterEnter> onAfterLeave=fn<afterLeave>  ... > 
-  at <Teleport to="body" disabled=true > 
-  at <ElDrawer modelValue=true onUpdate:modelValue=fn title="节点详情"  ... > 
-  at <TopologyGraph > 
-  at <ElCard > 
-  at <Topology onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) {__v_skip: true} > > 
-  at <RouterView > 
-  at <ElMain class="main-content" > 
-  at <ElContainer > 
-  at <ElContainer class="main-layout" > 
-  at <MainLayout > 
-  at <App>
-warn$1 @ chunk-HX5C5AN6.js?v=d751604f:2123
-logError @ chunk-HX5C5AN6.js?v=d751604f:2334
-handleError @ chunk-HX5C5AN6.js?v=d751604f:2326
-renderComponentRoot @ chunk-HX5C5AN6.js?v=d751604f:8677
-componentUpdateFn @ chunk-HX5C5AN6.js?v=d751604f:7515
-run @ chunk-HX5C5AN6.js?v=d751604f:488
-runIfDirty @ chunk-HX5C5AN6.js?v=d751604f:526
+callWithAsyncErrorHandling @ chunk-HX5C5AN6.js?v=d751604f:2277
+emit @ chunk-HX5C5AN6.js?v=d751604f:8526
+（匿名） @ chunk-HX5C5AN6.js?v=d751604f:10235
+handleClick @ element-plus.js?v=d751604f:15678
 callWithErrorHandling @ chunk-HX5C5AN6.js?v=d751604f:2270
-flushJobs @ chunk-HX5C5AN6.js?v=d751604f:2478
+callWithAsyncErrorHandling @ chunk-HX5C5AN6.js?v=d751604f:2277
+invoker @ chunk-HX5C5AN6.js?v=d751604f:11264
+api.js:43 响应错误: 404 Request failed with status code 404
+（匿名） @ api.js:43
 Promise.then
-queueFlush @ chunk-HX5C5AN6.js?v=d751604f:2392
-queueJob @ chunk-HX5C5AN6.js?v=d751604f:2387
-effect2.scheduler @ chunk-HX5C5AN6.js?v=d751604f:7566
-trigger @ chunk-HX5C5AN6.js?v=d751604f:516
-endBatch @ chunk-HX5C5AN6.js?v=d751604f:574
-notify @ chunk-HX5C5AN6.js?v=d751604f:834
-trigger @ chunk-HX5C5AN6.js?v=d751604f:808
-set value @ chunk-HX5C5AN6.js?v=d751604f:1680
-（匿名） @ TopologyGraph.vue:364
-_loop22 @ cytoscape.js?v=d751604f:9823
-（匿名） @ cytoscape.js?v=d751604f:9832
-forEachEventObj2 @ cytoscape.js?v=d751604f:9718
-p.emit.p.trigger @ cytoscape.js?v=d751604f:9799
-emit2 @ cytoscape.js?v=d751604f:12653
-（匿名） @ cytoscape.js?v=d751604f:9835
-forEachEventObj2 @ cytoscape.js?v=d751604f:9721
-p.emit.p.trigger @ cytoscape.js?v=d751604f:9799
-emit @ cytoscape.js?v=d751604f:9940
-triggerEvents2 @ cytoscape.js?v=d751604f:21309
-mouseupHandler @ cytoscape.js?v=d751604f:21958
-TopologyGraph.vue:364 [Vue warn]: Unhandled error during execution of component update 
-  at <ElFocusTrap loop="" trapped=true focus-trap-el= <div aria-modal=​"true" aria-label=​"节点详情" aria-describedby=​"el-id-2125-23" class=​"el-drawer rtl" role=​"dialog" style=​"width:​ 400px;​">​…​</div>​flex  ... > 
-  at <ElOverlay mask=true overlay-class=undefined z-index=2037  ... > 
-  at <BaseTransition onAfterEnter=fn<afterEnter> onAfterLeave=fn<afterLeave> onBeforeLeave=fn<beforeLeave>  ... > 
-  at <Transition name="el-drawer-fade" onAfterEnter=fn<afterEnter> onAfterLeave=fn<afterLeave>  ... > 
-  at <Teleport to="body" disabled=true > 
-  at <ElDrawer modelValue=true onUpdate:modelValue=fn title="节点详情"  ... > 
-  at <TopologyGraph > 
-  at <ElCard > 
-  at <Topology onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) {__v_skip: true} > > 
-  at <RouterView > 
-  at <ElMain class="main-content" > 
-  at <ElContainer > 
-  at <ElContainer class="main-layout" > 
-  at <MainLayout > 
-  at <App>
-warn$1 @ chunk-HX5C5AN6.js?v=d751604f:2123
-logError @ chunk-HX5C5AN6.js?v=d751604f:2334
-handleError @ chunk-HX5C5AN6.js?v=d751604f:2326
-callWithErrorHandling @ chunk-HX5C5AN6.js?v=d751604f:2272
-flushJobs @ chunk-HX5C5AN6.js?v=d751604f:2478
+_request @ axios.js?v=d751604f:2206
+request @ axios.js?v=d751604f:2115
+Axios.<computed> @ axios.js?v=d751604f:2243
+wrap @ axios.js?v=d751604f:8
+getFlowDetail @ flow.js:101
+checkFlowExists @ flow.js:133
+deleteFlow @ flow.js:147
+（匿名） @ FlowTables.vue:575
 Promise.then
-queueFlush @ chunk-HX5C5AN6.js?v=d751604f:2392
-queueJob @ chunk-HX5C5AN6.js?v=d751604f:2387
-effect2.scheduler @ chunk-HX5C5AN6.js?v=d751604f:7566
-trigger @ chunk-HX5C5AN6.js?v=d751604f:516
-endBatch @ chunk-HX5C5AN6.js?v=d751604f:574
-notify @ chunk-HX5C5AN6.js?v=d751604f:834
-trigger @ chunk-HX5C5AN6.js?v=d751604f:808
-set value @ chunk-HX5C5AN6.js?v=d751604f:1680
-（匿名） @ TopologyGraph.vue:364
-_loop22 @ cytoscape.js?v=d751604f:9823
-（匿名） @ cytoscape.js?v=d751604f:9832
-forEachEventObj2 @ cytoscape.js?v=d751604f:9718
-p.emit.p.trigger @ cytoscape.js?v=d751604f:9799
-emit2 @ cytoscape.js?v=d751604f:12653
-（匿名） @ cytoscape.js?v=d751604f:9835
-forEachEventObj2 @ cytoscape.js?v=d751604f:9721
-p.emit.p.trigger @ cytoscape.js?v=d751604f:9799
-emit @ cytoscape.js?v=d751604f:9940
-triggerEvents2 @ cytoscape.js?v=d751604f:21309
-mouseupHandler @ cytoscape.js?v=d751604f:21958
-TopologyGraph.vue:53 Uncaught (in promise) TypeError: _ctx.getNodePorts is not a function
-    at TopologyGraph.vue:53:20
-    at renderFnWithContext (chunk-HX5C5AN6.js?v=d751604f:2770:13)
-    at renderSlot (chunk-HX5C5AN6.js?v=d751604f:5093:53)
-    at element-plus.js?v=d751604f:29771:27
-    at renderFnWithContext (chunk-HX5C5AN6.js?v=d751604f:2770:13)
-    at renderSlot (chunk-HX5C5AN6.js?v=d751604f:5093:53)
-    at Proxy._sfc_render (element-plus.js?v=d751604f:12887:10)
-    at renderComponentRoot (chunk-HX5C5AN6.js?v=d751604f:8641:17)
-    at ReactiveEffect.componentUpdateFn [as fn] (chunk-HX5C5AN6.js?v=d751604f:7515:26)
-    at ReactiveEffect.run (chunk-HX5C5AN6.js?v=d751604f:488:19)
-（匿名） @ TopologyGraph.vue:53
-renderFnWithContext @ chunk-HX5C5AN6.js?v=d751604f:2770
-renderSlot @ chunk-HX5C5AN6.js?v=d751604f:5093
-（匿名） @ element-plus.js?v=d751604f:29771
-renderFnWithContext @ chunk-HX5C5AN6.js?v=d751604f:2770
-renderSlot @ chunk-HX5C5AN6.js?v=d751604f:5093
-_sfc_render @ element-plus.js?v=d751604f:12887
-renderComponentRoot @ chunk-HX5C5AN6.js?v=d751604f:8641
-componentUpdateFn @ chunk-HX5C5AN6.js?v=d751604f:7515
-run @ chunk-HX5C5AN6.js?v=d751604f:488
-runIfDirty @ chunk-HX5C5AN6.js?v=d751604f:526
+confirmDeleteFlow @ FlowTables.vue:573
+（匿名） @ FlowTables.vue:97
+cache.<computed>.cache.<computed> @ chunk-HX5C5AN6.js?v=d751604f:12229
 callWithErrorHandling @ chunk-HX5C5AN6.js?v=d751604f:2270
-flushJobs @ chunk-HX5C5AN6.js?v=d751604f:2478
+callWithAsyncErrorHandling @ chunk-HX5C5AN6.js?v=d751604f:2277
+emit @ chunk-HX5C5AN6.js?v=d751604f:8526
+（匿名） @ chunk-HX5C5AN6.js?v=d751604f:10235
+handleClick @ element-plus.js?v=d751604f:15678
+callWithErrorHandling @ chunk-HX5C5AN6.js?v=d751604f:2270
+callWithAsyncErrorHandling @ chunk-HX5C5AN6.js?v=d751604f:2277
+invoker @ chunk-HX5C5AN6.js?v=d751604f:11264
+api.js:47 API端点不存在
+（匿名） @ api.js:47
 Promise.then
-queueFlush @ chunk-HX5C5AN6.js?v=d751604f:2392
-queueJob @ chunk-HX5C5AN6.js?v=d751604f:2387
-effect2.scheduler @ chunk-HX5C5AN6.js?v=d751604f:7566
-trigger @ chunk-HX5C5AN6.js?v=d751604f:516
-endBatch @ chunk-HX5C5AN6.js?v=d751604f:574
-notify @ chunk-HX5C5AN6.js?v=d751604f:834
-trigger @ chunk-HX5C5AN6.js?v=d751604f:808
-set value @ chunk-HX5C5AN6.js?v=d751604f:1680
-（匿名） @ TopologyGraph.vue:364
-_loop22 @ cytoscape.js?v=d751604f:9823
-（匿名） @ cytoscape.js?v=d751604f:9832
-forEachEventObj2 @ cytoscape.js?v=d751604f:9718
-p.emit.p.trigger @ cytoscape.js?v=d751604f:9799
-emit2 @ cytoscape.js?v=d751604f:12653
-（匿名） @ cytoscape.js?v=d751604f:9835
-forEachEventObj2 @ cytoscape.js?v=d751604f:9721
-p.emit.p.trigger @ cytoscape.js?v=d751604f:9799
-emit @ cytoscape.js?v=d751604f:9940
-triggerEvents2 @ cytoscape.js?v=d751604f:21309
-mouseupHandler @ cytoscape.js?v=d751604f:21958
+_request @ axios.js?v=d751604f:2206
+request @ axios.js?v=d751604f:2115
+Axios.<computed> @ axios.js?v=d751604f:2243
+wrap @ axios.js?v=d751604f:8
+getFlowDetail @ flow.js:101
+checkFlowExists @ flow.js:133
+deleteFlow @ flow.js:147
+（匿名） @ FlowTables.vue:575
+Promise.then
+confirmDeleteFlow @ FlowTables.vue:573
+（匿名） @ FlowTables.vue:97
+cache.<computed>.cache.<computed> @ chunk-HX5C5AN6.js?v=d751604f:12229
+callWithErrorHandling @ chunk-HX5C5AN6.js?v=d751604f:2270
+callWithAsyncErrorHandling @ chunk-HX5C5AN6.js?v=d751604f:2277
+emit @ chunk-HX5C5AN6.js?v=d751604f:8526
+（匿名） @ chunk-HX5C5AN6.js?v=d751604f:10235
+handleClick @ element-plus.js?v=d751604f:15678
+callWithErrorHandling @ chunk-HX5C5AN6.js?v=d751604f:2270
+callWithAsyncErrorHandling @ chunk-HX5C5AN6.js?v=d751604f:2277
+invoker @ chunk-HX5C5AN6.js?v=d751604f:11264
+flow.js:104 获取流表详情失败: AxiosError {message: 'Request failed with status code 404', name: 'AxiosError', code: 'ERR_BAD_REQUEST', config: {…}, request: XMLHttpRequest, …}
+getFlowDetail @ flow.js:104
+await in getFlowDetail
+checkFlowExists @ flow.js:133
+deleteFlow @ flow.js:147
+（匿名） @ FlowTables.vue:575
+Promise.then
+confirmDeleteFlow @ FlowTables.vue:573
+（匿名） @ FlowTables.vue:97
+cache.<computed>.cache.<computed> @ chunk-HX5C5AN6.js?v=d751604f:12229
+callWithErrorHandling @ chunk-HX5C5AN6.js?v=d751604f:2270
+callWithAsyncErrorHandling @ chunk-HX5C5AN6.js?v=d751604f:2277
+emit @ chunk-HX5C5AN6.js?v=d751604f:8526
+（匿名） @ chunk-HX5C5AN6.js?v=d751604f:10235
+handleClick @ element-plus.js?v=d751604f:15678
+callWithErrorHandling @ chunk-HX5C5AN6.js?v=d751604f:2270
+callWithAsyncErrorHandling @ chunk-HX5C5AN6.js?v=d751604f:2277
+invoker @ chunk-HX5C5AN6.js?v=d751604f:11264
+flow.js:155 删除流表失败: Error: 流表不存在或已被删除
+    at Object.deleteFlow (flow.js:149:15)
+    at async FlowTables.vue:575:7
+deleteFlow @ flow.js:155
+await in deleteFlow
+（匿名） @ FlowTables.vue:575
+Promise.then
+confirmDeleteFlow @ FlowTables.vue:573
+（匿名） @ FlowTables.vue:97
+cache.<computed>.cache.<computed> @ chunk-HX5C5AN6.js?v=d751604f:12229
+callWithErrorHandling @ chunk-HX5C5AN6.js?v=d751604f:2270
+callWithAsyncErrorHandling @ chunk-HX5C5AN6.js?v=d751604f:2277
+emit @ chunk-HX5C5AN6.js?v=d751604f:8526
+（匿名） @ chunk-HX5C5AN6.js?v=d751604f:10235
+handleClick @ element-plus.js?v=d751604f:15678
+callWithErrorHandling @ chunk-HX5C5AN6.js?v=d751604f:2270
+callWithAsyncErrorHandling @ chunk-HX5C5AN6.js?v=d751604f:2277
+invoker @ chunk-HX5C5AN6.js?v=d751604f:11264
+FlowTables.vue:579 删除流表失败: Error: 流表不存在或已被删除
+    at Object.deleteFlow (flow.js:149:15)
+    at async FlowTables.vue:575:7
+（匿名） @ FlowTables.vue:579
+Promise.then
+confirmDeleteFlow @ FlowTables.vue:573
+（匿名） @ FlowTables.vue:97
+cache.<computed>.cache.<computed> @ chunk-HX5C5AN6.js?v=d751604f:12229
+callWithErrorHandling @ chunk-HX5C5AN6.js?v=d751604f:2270
+callWithAsyncErrorHandling @ chunk-HX5C5AN6.js?v=d751604f:2277
+emit @ chunk-HX5C5AN6.js?v=d751604f:8526
+（匿名） @ chunk-HX5C5AN6.js?v=d751604f:10235
+handleClick @ element-plus.js?v=d751604f:15678
+callWithErrorHandling @ chunk-HX5C5AN6.js?v=d751604f:2270
+callWithAsyncErrorHandling @ chunk-HX5C5AN6.js?v=d751604f:2277
+invoker @ chunk-HX5C5AN6.js?v=d751604f:11264

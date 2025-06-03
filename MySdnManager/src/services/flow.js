@@ -127,9 +127,28 @@ export const flowService = {
     }
   },
 
-  // 删除流表项
+  // 检查流表是否存在
+  async checkFlowExists(nodeId, tableId, flowId) {
+    try {
+      const flow = await this.getFlowDetail(nodeId, tableId, flowId)
+      return flow !== null
+    } catch (error) {
+      if (error.response && error.response.status === 404) {
+        return false
+      }
+      throw error
+    }
+  },
+
+  // 删除流表项（增加存在性检查）
   async deleteFlow(nodeId, tableId, flowId) {
     try {
+      // 先检查流表是否存在
+      const exists = await this.checkFlowExists(nodeId, tableId, flowId)
+      if (!exists) {
+        throw new Error('流表不存在或已被删除')
+      }
+      
       const response = await apiClient.delete(API_ENDPOINTS.FLOW_CONFIG(nodeId, tableId, flowId))
       return response.data
     } catch (error) {

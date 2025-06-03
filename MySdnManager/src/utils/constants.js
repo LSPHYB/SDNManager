@@ -20,8 +20,9 @@ export const API_ENDPOINTS = {
   FLOWS: (nodeId) => `/restconf/operational/opendaylight-inventory:nodes/node/${nodeId}/flow-node-inventory:table/0`,
   FLOWS_ALT: (nodeId) => `/restconf/operational/opendaylight-inventory:nodes/node/${nodeId}/table/0`,
   FLOWS_ALL_TABLES: (nodeId) => `/restconf/operational/opendaylight-inventory:nodes/node/${nodeId}`,
-  FLOW_CONFIG: (nodeId, tableId, flowId) => `/restconf/config/opendaylight-inventory:nodes/node/${nodeId}/flow-node-inventory:table/${tableId}/flow/${flowId}`,
-  FLOW_CONFIG_ALT: (nodeId, tableId, flowId) => `/restconf/config/opendaylight-inventory:nodes/node/${nodeId}/table/${tableId}/flow/${flowId}`,
+  // 流表管理相关 - 已修复的路径
+  FLOW_CONFIG: (nodeId, tableId, flowId) => `/restconf/config/opendaylight-inventory:nodes/node/${nodeId}/flow-node-inventory:table/${tableId}/flow/${encodeURIComponent(flowId)}`,
+  FLOW_CONFIG_ALT: (nodeId, tableId, flowId) => `/restconf/config/opendaylight-inventory:nodes/node/${nodeId}/table/${tableId}/flow/${encodeURIComponent(flowId)}`,
   
   // 统计信息
   NODE_STATS: (nodeId) => `/restconf/operational/opendaylight-inventory:nodes/node/${nodeId}/flow-node-inventory:table/0/flow-statistics-data`
