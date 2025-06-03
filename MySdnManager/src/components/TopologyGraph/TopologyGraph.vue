@@ -98,30 +98,47 @@ const cytoscapeStyle = [
   {
     selector: 'node',
     style: {
-      'background-color': 'data(color)',
       'label': 'data(label)',
-      'text-valign': 'center',
+      'text-valign': 'bottom', // 将文本移到节点下方
       'text-halign': 'center',
       'font-size': '12px',
       'text-outline-width': 2,
       'text-outline-color': '#fff',
       'color': '#000',
-      'width': 40,
-      'height': 40,
-      'border-width': 2,
-      'border-color': '#666'
+      'width': 50,
+      'height': 50,
+      'border-width': 0, // 移除边框
+      'background-opacity': 0 // 使背景透明，只显示图片
     }
   },
   {
     selector: 'node[type="switch"]',
     style: {
-      'shape': 'ellipse'
+      'background-image': '/icons/switch.png',
+      'background-fit': 'contain', // 使用contain而不是cover，保持图片原始比例
+      'background-clip': 'none', // 不裁剪背景图片
+      'background-width': '100%',
+      'background-height': '100%'
     }
   },
   {
     selector: 'node[type="host"]',
     style: {
-      'shape': 'rectangle'
+      'background-image': '/icons/host.png',
+      'background-fit': 'contain', // 使用contain而不是cover，保持图片原始比例
+      'background-clip': 'none', // 不裁剪背景图片
+      'background-width': '100%',
+      'background-height': '100%'
+    }
+  },
+  {
+    selector: 'node[type="controller"]',
+    style: {
+      'background-image': '/icons/controller.png',
+      'background-fit': 'contain', // 使用contain而不是cover，保持图片原始比例
+      'background-clip': 'none', // 不裁剪背景图片
+      'background-width': '100%',
+      'background-height': '100%'
     }
   },
   {
