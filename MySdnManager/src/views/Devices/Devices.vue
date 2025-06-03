@@ -128,9 +128,9 @@
         </el-descriptions>
 
         <!-- 端口信息 -->
-        <div v-if="selectedDevice.connectors && selectedDevice.connectors.length > 0" class="device-ports">
+        <div v-if="selectedDevice" class="device-ports">
           <h4>端口信息</h4>
-          <el-table :data="selectedDevice.connectors" size="small">
+          <el-table :data="formatDevicePorts(selectedDevice)" size="small">
             <el-table-column prop="id" label="端口ID" />
             <el-table-column prop="name" label="端口名称" />
             <el-table-column label="状态">
@@ -140,8 +140,20 @@
                 </el-tag>
               </template>
             </el-table-column>
-            <el-table-column prop="currentSpeed" label="当前速度" />
-            <el-table-column prop="maximumSpeed" label="最大速度" />
+            <!-- 主机特有信息 -->
+            <el-table-column v-if="selectedDevice.type === 'host'" prop="ip" label="IP地址">
+              <template #default="scope">
+                {{ scope.row.ip || '未知' }}
+              </template>
+            </el-table-column>
+            <el-table-column v-if="selectedDevice.type === 'host'" prop="mac" label="MAC地址">
+              <template #default="scope">
+                {{ scope.row.mac || '未知' }}
+              </template>
+            </el-table-column>
+            <!-- 交换机特有信息 -->
+            <el-table-column v-if="selectedDevice.type === 'switch'" prop="currentSpeed" label="当前速度" />
+            <el-table-column v-if="selectedDevice.type === 'switch'" prop="maximumSpeed" label="最大速度" />
           </el-table>
         </div>
       </div>
@@ -278,6 +290,121 @@ const getDeviceTypeLabel = (type) => {
 const formatTime = (timeStr) => {
   if (!timeStr) return '-'
   return new Date(timeStr).toLocaleString('zh-CN')
+}
+
+// 处理端口信息
+const formatDevicePorts = (device) => {
+  if (!device) return [];
+  
+  // 如果是主机设备，特殊处理
+  if (device.type === 'host') {
+    // 处理主机连接点
+    if (device.connectors && Array.isArray(device.connectors)) {
+      return device.connectors;
+    }
+    
+    // 处理attachment-points格式
+    if (device['host-tracker-service:attachment-points'] && 
+        Array.isArray(device['host-tracker-service:attachment-points'])) {
+      return device['host-tracker-service:attachment-points'].map(ap => ({
+        id: ap['tp-id'] || '',
+        name: formatPortName(ap['tp-id'] || ''),
+        state: 'LIVE',
+        currentSpeed: '未知',
+        maximumSpeed: '未知'
+      }));
+    }
+    
+    // 处理addresses格式
+    if (device['host-tracker-service:addresses'] && 
+        Array.isArray(device['host-tracker-service:addresses'])) {
+      return device['host-tracker-service:addresses'].map((addr, index) => ({
+        id: `addr-${index}`,
+        name: addr.ip || addr.mac || `地址-${index}`,
+        state: 'LIVE',
+        currentSpeed: '未知',
+        maximumSpeed: '未知',
+        ip: addr.ip,
+        mac: addr.mac
+      }));
+    }
+  }
+  
+  // 处理node-connector格式 (交换机设备)
+  if (device.connectors && Array.isArray(device.connectors)) {
+    return device.connectors.map(port => ({
+      id: port.id || port['tp-id'] || '',
+      name: formatPortName(port.id || port['tp-id'] || ''),
+      state: getPortState(port),
+      currentSpeed: getPortSpeed(port, 'current'),
+      maximumSpeed: getPortSpeed(port, 'maximum')
+    }));
+  }
+  
+  // 处理termination-point格式
+  if (device['termination-point'] && Array.isArray(device['termination-point'])) {
+    return device['termination-point'].map(tp => ({
+      id: tp['tp-id'] || '',
+      name: formatPortName(tp['tp-id'] || ''),
+      state: getPortState(tp),
+      currentSpeed: getPortSpeed(tp, 'current'),
+      maximumSpeed: getPortSpeed(tp, 'maximum')
+    }));
+  }
+  
+  return [];
+}
+
+// 格式化端口名称
+const formatPortName = (portId) => {
+  if (!portId) return '未知';
+  
+  // 提取端口号部分
+  const parts = portId.split(':');
+  if (parts.length > 1) {
+    return `端口 ${parts[parts.length-1]}`;
+  }
+  
+  return portId;
+}
+
+// 获取端口状态
+const getPortState = (port) => {
+  // 检查flow-node-inventory:state字段
+  if (port['flow-node-inventory:state']) {
+    if (port['flow-node-inventory:state']['link-down'] === false) {
+      return 'LIVE';
+    }
+    return 'DOWN';
+  }
+  
+  // 检查state字段
+  if (port.state) {
+    return port.state;
+  }
+  
+  return '未知';
+}
+
+// 获取端口速度
+const getPortSpeed = (port, type) => {
+  if (type === 'current' && port['flow-node-inventory:current-speed']) {
+    return `${port['flow-node-inventory:current-speed']} Mbps`;
+  }
+  
+  if (type === 'maximum' && port['flow-node-inventory:maximum-speed']) {
+    return `${port['flow-node-inventory:maximum-speed']} Mbps`;
+  }
+  
+  if (type === 'current' && port.currentSpeed) {
+    return `${port.currentSpeed} Mbps`;
+  }
+  
+  if (type === 'maximum' && port.maximumSpeed) {
+    return `${port.maximumSpeed} Mbps`;
+  }
+  
+  return '未知';
 }
 
 // 组件挂载

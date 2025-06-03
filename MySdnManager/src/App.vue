@@ -14,6 +14,7 @@ import MainLayout from './components/Layout/MainLayout.vue'
   margin: 0;
   padding: 0;
   height: 100vh;
+  width: 100%; /* 添加宽度100% */
   overflow: hidden;
   display: flex;
   flex-direction: column;

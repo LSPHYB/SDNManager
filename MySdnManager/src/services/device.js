@@ -81,12 +81,15 @@ export const deviceService = {
                 const nodeId = node['node-id'] || node.id || ''
                 // 识别主机节点
                 if (nodeId.includes('host:') || this.isHostNode(node)) {
+                  // 提取主机连接点信息
+                  const connectors = this.extractHostConnectors(node);
+                  
                   hosts.push({
                     id: nodeId,
                     name: nodeId,
                     type: 'host',
                     status: 'connected',
-                    connectors: [],
+                    connectors: connectors, // 使用提取的连接点
                     ...node
                   })
                 }
@@ -105,6 +108,48 @@ export const deviceService = {
     }
     
     return []
+  },
+
+  // 提取主机连接点信息
+  extractHostConnectors(node) {
+    const connectors = [];
+    
+    // 处理attachment-points格式
+    if (node['host-tracker-service:attachment-points'] && 
+        Array.isArray(node['host-tracker-service:attachment-points'])) {
+      node['host-tracker-service:attachment-points'].forEach(ap => {
+        connectors.push({
+          id: ap['tp-id'] || '',
+          name: ap['tp-id'] || '',
+          state: 'LIVE',
+          currentSpeed: '1000', // 默认值
+          maximumSpeed: '1000', // 默认值
+          isHostPort: true
+        });
+      });
+    }
+    
+    // 处理addresses格式
+    if (node['host-tracker-service:addresses'] && 
+        Array.isArray(node['host-tracker-service:addresses'])) {
+      // 如果已经有连接点，不再添加地址作为连接点
+      if (connectors.length === 0) {
+        node['host-tracker-service:addresses'].forEach((addr, index) => {
+          connectors.push({
+            id: `addr-${index}`,
+            name: addr.ip || addr.mac || `地址-${index}`,
+            state: 'LIVE',
+            currentSpeed: '未知',
+            maximumSpeed: '未知',
+            isHostPort: true,
+            ip: addr.ip,
+            mac: addr.mac
+          });
+        });
+      }
+    }
+    
+    return connectors;
   },
 
   // 判断是否为主机节点

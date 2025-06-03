@@ -169,29 +169,40 @@ export const topologyService = {
   },
 
   // 获取拓扑链路
+  // 获取拓扑链路
   async getTopologyLinks() {
     try {
-      const topology = await this.getTopology()
-      const networks = topology['network-topology']?.topology || []
-      const links = []
+      const topology = await this.getTopology();
+      console.log('原始拓扑数据:', JSON.stringify(topology));
+      const networks = topology['network-topology']?.topology || [];
+      const links = [];
       
       networks.forEach(network => {
         if (network.link) {
           network.link.forEach(link => {
+            console.log('处理链路:', link);
             // 增强的链路源目标解析 - 支持Carbon版本的多种格式
             let sourceNode = '';
             let destNode = '';
             
             // 处理source节点
             if (typeof link.source === 'object') {
-              sourceNode = link.source['source-node'] || link.source['source-tp']?.split(':')[0] || '';
+              console.log('链路源是对象:', link.source);
+              sourceNode = link.source['source-node'] || 
+                         (link.source['source-tp'] ? link.source['source-tp'].split(':')[0] : '') || 
+                         link.source.id || 
+                         '';
             } else {
               sourceNode = link.source || '';
             }
             
             // 处理destination节点
             if (typeof link.destination === 'object') {
-              destNode = link.destination['dest-node'] || link.destination['dest-tp']?.split(':')[0] || '';
+              console.log('链路目标是对象:', link.destination);
+              destNode = link.destination['dest-node'] || 
+                       (link.destination['dest-tp'] ? link.destination['dest-tp'].split(':')[0] : '') || 
+                       link.destination.id || 
+                       '';
             } else {
               destNode = link.destination || '';
             }
@@ -200,27 +211,37 @@ export const topologyService = {
             sourceNode = this.normalizeNodeId(sourceNode);
             destNode = this.normalizeNodeId(destNode);
             
+            console.log(`提取的源节点: ${sourceNode}, 目标节点: ${destNode}`);
+            
             // 只有当源节点和目标节点都存在时才添加链路
             if (sourceNode && destNode) {
-              links.push({
+              // 创建新对象，不保留原始link对象的source和destination
+              const newLink = {
                 id: link['link-id'] || `link-${sourceNode}-${destNode}`,
-                from: sourceNode,
-                to: destNode,
-                label: this.formatLinkLabel(sourceNode, destNode),
-                ...link
-              })
+                source: sourceNode,
+                target: destNode,
+                from: sourceNode,  // 兼容性
+                to: destNode,      // 兼容性
+                label: this.formatLinkLabel(sourceNode, destNode)
+              };
+              
+              // 复制其他需要的属性
+              if (link.type) newLink.type = link.type;
+              if (link.status) newLink.status = link.status;
+              
+              links.push(newLink);
             } else {
-              console.warn('链路缺少源节点或目标节点:', link)
+              console.warn('链路缺少源节点或目标节点:', link);
             }
-          })
+          });
         }
-      })
+      });
       
-      console.log('处理后的链路数据:', links)
-      return links
+      console.log('处理后的链路数据:', links);
+      return links;
     } catch (error) {
-      console.error('获取拓扑链路失败:', error)
-      return []
+      console.error('获取拓扑链路失败:', error);
+      return [];
     }
   },
   
@@ -254,27 +275,31 @@ export const topologyService = {
   },
 
   // 判断节点类型
+  // 判断节点类型
   getNodeType(node) {
     // 获取节点ID，支持多种格式
     const nodeId = node['node-id'] || node.id || '';
     
-    // 检查是否有终端点信息 - 这通常表示是交换机
-    if (node['termination-point'] || node['flow-node-inventory:switch-features']) {
-      return 'switch';
-    }
-    
-    // 检查是否有主机跟踪服务信息 - Carbon版本特有
-    if (node['host-tracker-service:addresses'] || nodeId.includes('host:')) {
+    // 检查节点ID是否包含host标识
+    if (nodeId.includes('host:') || 
+        (node['host-tracker-service:addresses'] && node['host-tracker-service:addresses'].length > 0) ||
+        (node['addresses'] && node['addresses'].length > 0)) {
       return 'host';
     }
     
-    // 基于ID的判断
-    if (nodeId.includes('openflow:')) {
+    // 检查是否有终端点信息或流表 - 这通常表示是交换机
+    if (node['termination-point'] || 
+        node['flow-node-inventory:switch-features'] || 
+        nodeId.includes('openflow:')) {
       return 'switch';
-    } else if (nodeId.includes('host:')) {
+    }
+    
+    // 检查MAC地址格式 - 可能是主机
+    if (nodeId.match(/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/)) {
       return 'host';
     }
     
+    // 默认返回unknown类型
     return 'unknown';
-  }
+  },
 }

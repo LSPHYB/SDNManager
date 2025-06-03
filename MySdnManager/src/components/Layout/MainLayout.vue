@@ -80,6 +80,7 @@ const refreshData = () => {
 <style scoped>
 .main-layout {
   height: 100vh;
+  width: 100%; /* 添加宽度100% */
   overflow: hidden;
   display: flex;
   flex-direction: row;

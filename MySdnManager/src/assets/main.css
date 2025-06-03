@@ -1,9 +1,11 @@
 @import './base.css';
 
 #app {
-  max-width: 1280px;
+  /* 移除最大宽度限制 */
+  /* max-width: 1280px; */
   margin: 0 auto;
-  padding: 2rem;
+  /* 移除内边距 */
+  /* padding: 2rem; */
   font-weight: normal;
 }
 
@@ -21,7 +23,8 @@ a,
   }
 }
 
-@media (min-width: 1024px) {
+/* 移除或修改这个媒体查询，它限制了布局 */
+/* @media (min-width: 1024px) {
   body {
     display: flex;
     place-items: center;
@@ -32,4 +35,4 @@ a,
     grid-template-columns: 1fr 1fr;
     padding: 0 2rem;
   }
-}
+} */
