@@ -555,6 +555,63 @@ onUnmounted(() => {
     cy.value.destroy()
   }
 })
+
+// 导出拓扑图为图片
+const exportAsImage = (options = {}) => {
+  if (!cy.value) {
+    ElMessage.error('拓扑图未初始化')
+    return null
+  }
+  
+  // 默认导出选项
+  const defaultOptions = {
+    output: 'png',  // 可选: 'png', 'jpg', 'jpeg'
+    bg: '#ffffff',  // 背景颜色
+    full: true,     // 导出整个拓扑图
+    scale: 1.5,     // 缩放比例，提高清晰度
+    maxWidth: 4000, // 最大宽度
+    maxHeight: 4000 // 最大高度
+  }
+  
+  // 合并选项
+  const exportOptions = { ...defaultOptions, ...options }
+  
+  try {
+    // 使用Cytoscape的PNG导出功能
+    return cy.value.png(exportOptions)
+  } catch (error) {
+    console.error('导出图片失败:', error)
+    ElMessage.error('导出图片失败: ' + error.message)
+    return null
+  }
+}
+
+// 导出并下载图片
+const downloadImage = (filename = 'network-topology.png') => {
+  try {
+    // 获取图片数据URL
+    const dataUrl = exportAsImage()
+    if (!dataUrl) return
+    
+    // 创建下载链接
+    const link = document.createElement('a')
+    link.href = dataUrl
+    link.download = filename
+    link.click()
+    
+    ElMessage.success('拓扑图导出成功')
+  } catch (error) {
+    console.error('下载图片失败:', error)
+    ElMessage.error('下载图片失败: ' + error.message)
+  }
+}
+
+// 暴露方法给父组件
+defineExpose({
+  downloadImage,
+  exportAsImage,
+  resetView
+})
 </script>
 
 <style scoped>

@@ -130,7 +130,9 @@
         <!-- 端口信息 -->
         <div v-if="selectedDevice" class="device-ports">
           <h4>端口信息</h4>
-          <el-table :data="formatDevicePorts(selectedDevice)" size="small">
+          <el-table :data="devicePorts" size="small"
+            :key="selectedDevice?.id"
+          >
             <el-table-column prop="id" label="端口ID" />
             <el-table-column prop="name" label="端口名称" />
             <el-table-column label="状态">
@@ -162,8 +164,9 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { deviceService } from '../../services/device.js'
+import { topologyService } from '../../services/topology.js'
 import { ElMessage } from 'element-plus'
 import { useRouter } from 'vue-router'
 
@@ -175,6 +178,8 @@ const loading = ref(false)
 const searchText = ref('')
 const showDetailDialog = ref(false)
 const selectedDevice = ref(null)
+const devicePorts = ref([]) // 新增：存储设备端口信息
+const portLoading = ref(false)
 
 // 计算属性
 const filteredDevices = computed(() => {
@@ -193,6 +198,54 @@ const deviceStats = computed(() => {
   
   return { total, connected, switches, hosts }
 })
+
+// 从设备ID中提取MAC地址的函数
+const extractMacFromHostId = (hostId) => {
+  if (!hostId || !hostId.includes('host:')) return '未知'
+  
+  // 从host:xx:xx:xx:xx:xx:xx格式中提取MAC地址
+  const parts = hostId.split(':')
+  if (parts.length >= 7) {
+    // 提取MAC地址部分 (host:后面的6个部分)
+    const macParts = parts.slice(1, 7)
+    return macParts.join(':')
+  }
+  
+  return '未知'
+}
+
+// 从拓扑数据中获取主机IP地址的函数
+const getHostIpFromTopology = async (hostId) => {
+  try {
+    const topologyNodes = await topologyService.getTopologyNodes()
+    const hostNode = topologyNodes.find(node => node.id === hostId)
+    
+    if (hostNode) {
+      // 检查host-tracker-service:addresses字段
+      if (hostNode['host-tracker-service:addresses'] && 
+          Array.isArray(hostNode['host-tracker-service:addresses']) && 
+          hostNode['host-tracker-service:addresses'].length > 0) {
+        const addresses = hostNode['host-tracker-service:addresses']
+        for (const addr of addresses) {
+          if (addr.ip) return addr.ip
+          if (addr['ip-address']) return addr['ip-address']
+        }
+      }
+      
+      // 检查其他可能的IP字段
+      if (hostNode.ip) return hostNode.ip
+      if (hostNode.addresses && Array.isArray(hostNode.addresses)) {
+        for (const addr of hostNode.addresses) {
+          if (addr.ip) return addr.ip
+        }
+      }
+    }
+  } catch (error) {
+    console.error('从拓扑获取主机IP失败:', error)
+  }
+  
+  return '未知'
+}
 
 // 加载设备列表
 const loadDevices = async () => {
@@ -229,7 +282,7 @@ const loadDevices = async () => {
           lastUpdate: new Date().toISOString()
         },
         {
-          id: 'host:1',
+          id: 'host:aa:bb:cc:dd:ee:ff',
           name: 'Host-1',
           type: 'host',
           status: 'connected',
@@ -253,11 +306,34 @@ const refreshDevices = () => {
   loadDevices()
 }
 
-// 显示设备详情
-const showDeviceDetail = (device) => {
-  selectedDevice.value = device
-  showDetailDialog.value = true
+// 显示设备详情 - 修复版本
+// 添加组件卸载时的清理
+let isComponentMounted = ref(true)
+
+const showDeviceDetail = async (device) => {
+  if (!isComponentMounted.value) return
+  
+  try {
+    selectedDevice.value = device
+    showDetailDialog.value = true
+    portLoading.value = true
+    
+    const ports = await formatDevicePorts(device)
+    if (isComponentMounted.value) {
+      devicePorts.value = ports
+    }
+  } catch (error) {
+    if (isComponentMounted.value) {
+      console.error('加载设备详情失败:', error)
+      ElMessage.error('加载设备详情失败')
+      devicePorts.value = []
+    }
+  }
 }
+
+onUnmounted(() => {
+  isComponentMounted.value = false
+})
 
 // 显示流表
 const showFlowTables = (device) => {
@@ -293,41 +369,79 @@ const formatTime = (timeStr) => {
 }
 
 // 处理端口信息
-const formatDevicePorts = (device) => {
-  if (!device) return [];
+const formatDevicePorts = async (device) => {
+  if (!device) return []
   
   // 如果是主机设备，特殊处理
   if (device.type === 'host') {
+    const ports = []
+    
+    // 从设备ID中提取MAC地址
+    const macAddress = extractMacFromHostId(device.id)
+    
+    // 从拓扑数据中获取IP地址
+    const ipAddress = await getHostIpFromTopology(device.id)
+    
     // 处理主机连接点
     if (device.connectors && Array.isArray(device.connectors)) {
-      return device.connectors;
+      device.connectors.forEach(connector => {
+        ports.push({
+          ...connector,
+          mac: macAddress,
+          ip: ipAddress
+        })
+      })
+      return ports
     }
     
     // 处理attachment-points格式
     if (device['host-tracker-service:attachment-points'] && 
         Array.isArray(device['host-tracker-service:attachment-points'])) {
-      return device['host-tracker-service:attachment-points'].map(ap => ({
-        id: ap['tp-id'] || '',
-        name: formatPortName(ap['tp-id'] || ''),
-        state: 'LIVE',
-        currentSpeed: '未知',
-        maximumSpeed: '未知'
-      }));
+      device['host-tracker-service:attachment-points'].forEach(ap => {
+        ports.push({
+          id: ap['tp-id'] || '',
+          name: formatPortName(ap['tp-id'] || ''),
+          state: 'LIVE',
+          currentSpeed: '未知',
+          maximumSpeed: '未知',
+          mac: macAddress,
+          ip: ipAddress
+        })
+      })
+      return ports
     }
     
     // 处理addresses格式
     if (device['host-tracker-service:addresses'] && 
         Array.isArray(device['host-tracker-service:addresses'])) {
-      return device['host-tracker-service:addresses'].map((addr, index) => ({
-        id: `addr-${index}`,
-        name: addr.ip || addr.mac || `地址-${index}`,
+      device['host-tracker-service:addresses'].forEach((addr, index) => {
+        ports.push({
+          id: `addr-${index}`,
+          name: addr.ip || addr.mac || `地址-${index}`,
+          state: 'LIVE',
+          currentSpeed: '未知',
+          maximumSpeed: '未知',
+          ip: addr.ip || ipAddress,
+          mac: addr.mac || macAddress
+        })
+      })
+      return ports
+    }
+    
+    // 如果没有其他连接点信息，创建一个默认的端口显示MAC和IP
+    if (ports.length === 0) {
+      ports.push({
+        id: 'default',
+        name: '主机接口',
         state: 'LIVE',
         currentSpeed: '未知',
         maximumSpeed: '未知',
-        ip: addr.ip,
-        mac: addr.mac
-      }));
+        mac: macAddress,
+        ip: ipAddress
+      })
     }
+    
+    return ports
   }
   
   // 处理node-connector格式 (交换机设备)
@@ -338,7 +452,7 @@ const formatDevicePorts = (device) => {
       state: getPortState(port),
       currentSpeed: getPortSpeed(port, 'current'),
       maximumSpeed: getPortSpeed(port, 'maximum')
-    }));
+    }))
   }
   
   // 处理termination-point格式
@@ -349,23 +463,23 @@ const formatDevicePorts = (device) => {
       state: getPortState(tp),
       currentSpeed: getPortSpeed(tp, 'current'),
       maximumSpeed: getPortSpeed(tp, 'maximum')
-    }));
+    }))
   }
   
-  return [];
+  return []
 }
 
 // 格式化端口名称
 const formatPortName = (portId) => {
-  if (!portId) return '未知';
+  if (!portId) return '未知'
   
   // 提取端口号部分
-  const parts = portId.split(':');
+  const parts = portId.split(':')
   if (parts.length > 1) {
-    return `端口 ${parts[parts.length-1]}`;
+    return `端口 ${parts[parts.length-1]}`
   }
   
-  return portId;
+  return portId
 }
 
 // 获取端口状态
@@ -373,38 +487,38 @@ const getPortState = (port) => {
   // 检查flow-node-inventory:state字段
   if (port['flow-node-inventory:state']) {
     if (port['flow-node-inventory:state']['link-down'] === false) {
-      return 'LIVE';
+      return 'LIVE'
     }
-    return 'DOWN';
+    return 'DOWN'
   }
   
   // 检查state字段
   if (port.state) {
-    return port.state;
+    return port.state
   }
   
-  return '未知';
+  return '未知'
 }
 
 // 获取端口速度
 const getPortSpeed = (port, type) => {
   if (type === 'current' && port['flow-node-inventory:current-speed']) {
-    return `${port['flow-node-inventory:current-speed']} Mbps`;
+    return `${port['flow-node-inventory:current-speed']} Mbps`
   }
   
   if (type === 'maximum' && port['flow-node-inventory:maximum-speed']) {
-    return `${port['flow-node-inventory:maximum-speed']} Mbps`;
+    return `${port['flow-node-inventory:maximum-speed']} Mbps`
   }
   
   if (type === 'current' && port.currentSpeed) {
-    return `${port.currentSpeed} Mbps`;
+    return `${port.currentSpeed} Mbps`
   }
   
   if (type === 'maximum' && port.maximumSpeed) {
-    return `${port.maximumSpeed} Mbps`;
+    return `${port.maximumSpeed} Mbps`
   }
   
-  return '未知';
+  return '未知'
 }
 
 // 组件挂载
@@ -478,3 +592,4 @@ onMounted(() => {
   background-color: #f5f7fa;
 }
 </style>
+

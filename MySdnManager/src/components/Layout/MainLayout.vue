@@ -44,15 +44,17 @@
             <el-icon><Refresh /></el-icon>
             刷新
           </el-button>
-          <el-dropdown>
+          <el-dropdown @command="handleCommand">
             <el-button link>
               <el-icon><User /></el-icon>
-              管理员
+              {{ currentUser?.username || '管理员' }}
             </el-button>
             <template #dropdown>
               <el-dropdown-menu>
-                <el-dropdown-item>个人设置</el-dropdown-item>
-                <el-dropdown-item divided>退出登录</el-dropdown-item>
+                <el-dropdown-item command="logout" divided>
+                  <el-icon><SwitchButton /></el-icon>
+                  退出登录
+                </el-dropdown-item>
               </el-dropdown-menu>
             </template>
           </el-dropdown>
@@ -68,19 +70,54 @@
 </template>
 
 <script setup>
-import { ElMessage } from 'element-plus'
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import { SwitchButton } from '@element-plus/icons-vue'
+import { authService } from '../../services/auth.js'
 
+const router = useRouter()
+const currentUser = ref(null)
+
+// 获取当前用户信息
+onMounted(() => {
+  currentUser.value = authService.getCurrentUser()
+})
+
+// 刷新数据
 const refreshData = () => {
   ElMessage.success('数据刷新成功')
-  // 这里可以添加全局数据刷新逻辑
   window.location.reload()
+}
+
+// 处理下拉菜单命令
+const handleCommand = async (command) => {
+  if (command === 'logout') {
+    try {
+      await ElMessageBox.confirm(
+        '确定要退出登录吗？',
+        '退出确认',
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }
+      )
+      
+      await authService.logout()
+      ElMessage.success('已退出登录')
+      router.push('/login')
+    } catch {
+      // 用户取消退出
+    }
+  }
 }
 </script>
 
 <style scoped>
 .main-layout {
   height: 100vh;
-  width: 100%; /* 添加宽度100% */
+  width: 100%;
   overflow: hidden;
   display: flex;
   flex-direction: row;

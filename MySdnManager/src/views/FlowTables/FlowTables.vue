@@ -32,10 +32,6 @@
               <el-icon><Refresh /></el-icon>
               刷新
             </el-button>
-            <el-button type="success" @click="showAddFlowDialog">
-              <el-icon><Plus /></el-icon>
-              添加流表
-            </el-button>
           </div>
         </div>
       </template>
@@ -89,16 +85,7 @@
             {{ scope.row['idle-timeout'] || '-' }} / {{ scope.row['hard-timeout'] || '-' }}
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="150">
-          <template #default="scope">
-            <el-button link @click.stop="showFlowDetail(scope.row)">
-              详情
-            </el-button>
-            <el-button link @click.stop="confirmDeleteFlow(scope.row)" class="delete-btn">
-              删除
-            </el-button>
-          </template>
-        </el-table-column>
+
       </el-table>
 
       <!-- 空状态 -->
@@ -266,84 +253,7 @@
       </div>
     </el-dialog>
 
-    <!-- 添加流表对话框 -->
-    <el-dialog
-      v-model="showAddDialog"
-      title="添加流表"
-      width="800px"
-    >
-      <el-form :model="newFlow" label-width="120px">
-        <el-form-item label="流表ID">
-          <el-input v-model="newFlow.id" placeholder="例如: flow-1" />
-        </el-form-item>
-        <el-form-item label="表ID">
-          <el-input-number v-model="newFlow['table_id']" :min="0" :max="255" />
-        </el-form-item>
-        <el-form-item label="优先级">
-          <el-input-number v-model="newFlow.priority" :min="0" :max="65535" />
-        </el-form-item>
-        <el-form-item label="空闲超时(秒)">
-          <el-input-number v-model="newFlow['idle-timeout']" :min="0" />
-        </el-form-item>
-        <el-form-item label="硬超时(秒)">
-          <el-input-number v-model="newFlow['hard-timeout']" :min="0" />
-        </el-form-item>
 
-        <!-- 匹配条件 -->
-        <el-form-item label="匹配条件">
-          <el-card shadow="hover" class="flow-card">
-            <el-form-item label="入端口">
-              <el-input v-model="matchFields.inPort" placeholder="例如: 1" />
-            </el-form-item>
-            <el-form-item label="源MAC地址">
-              <el-input v-model="matchFields.ethSrc" placeholder="例如: 00:00:00:00:00:01" />
-            </el-form-item>
-            <el-form-item label="目的MAC地址">
-              <el-input v-model="matchFields.ethDst" placeholder="例如: 00:00:00:00:00:02" />
-            </el-form-item>
-            <el-form-item label="以太网类型">
-              <el-select v-model="matchFields.ethType" placeholder="选择类型">
-                <el-option label="IPv4 (0x0800)" value="2048" />
-                <el-option label="ARP (0x0806)" value="2054" />
-                <el-option label="IPv6 (0x86DD)" value="34525" />
-              </el-select>
-            </el-form-item>
-            <el-form-item label="源IP地址">
-              <el-input v-model="matchFields.ipv4Src" placeholder="例如: 192.168.1.1/24" />
-            </el-form-item>
-            <el-form-item label="目的IP地址">
-              <el-input v-model="matchFields.ipv4Dst" placeholder="例如: 192.168.1.2/24" />
-            </el-form-item>
-          </el-card>
-        </el-form-item>
-
-        <!-- 动作 -->
-        <el-form-item label="动作">
-          <el-card shadow="hover" class="flow-card">
-            <el-form-item label="动作类型">
-              <el-select v-model="actionFields.type" placeholder="选择动作类型">
-                <el-option label="输出到端口" value="output" />
-                <el-option label="发送到控制器" value="controller" />
-                <el-option label="丢弃" value="drop" />
-                <el-option label="泛洪" value="flood" />
-              </el-select>
-            </el-form-item>
-            <el-form-item label="输出端口" v-if="actionFields.type === 'output'">
-              <el-input v-model="actionFields.outputPort" placeholder="例如: 2 或 NORMAL" />
-            </el-form-item>
-          </el-card>
-        </el-form-item>
-      </el-form>
-
-      <template #footer>
-        <div class="dialog-footer">
-          <el-button @click="showAddDialog = false">取消</el-button>
-          <el-button type="primary" @click="addFlow" :loading="submitting">
-            确认添加
-          </el-button>
-        </div>
-      </template>
-    </el-dialog>
   </div>
 </template>
 

@@ -13,7 +13,7 @@
         </div>
       </template>
       
-      <TopologyGraph />
+      <TopologyGraph ref="topologyGraphRef" />
     </el-card>
   </div>
 </template>
@@ -21,10 +21,18 @@
 <script setup>
 import TopologyGraph from '../../components/TopologyGraph/TopologyGraph.vue'
 import { ElMessage } from 'element-plus'
+import { ref } from 'vue'
+
+// 引用拓扑图组件
+const topologyGraphRef = ref(null)
 
 // 导出拓扑
 const exportTopology = () => {
-  ElMessage.info('导出功能开发中...')
+  if (topologyGraphRef.value) {
+    topologyGraphRef.value.downloadImage('network-topology.png')
+  } else {
+    ElMessage.error('拓扑图组件未加载')
+  }
 }
 </script>
 

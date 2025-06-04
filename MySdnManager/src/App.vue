@@ -1,11 +1,33 @@
 <template>
   <div id="app">
-    <MainLayout />
+    <MainLayout v-if="isAuthenticated" />
+    <router-view v-else />
   </div>
 </template>
 
 <script setup>
+import { ref, onMounted, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import MainLayout from './components/Layout/MainLayout.vue'
+import { authService } from './services/auth.js'
+
+const route = useRoute()
+const isAuthenticated = ref(false)
+
+// 检查认证状态
+const checkAuth = () => {
+  isAuthenticated.value = authService.isAuthenticated()
+}
+
+// 监听路由变化，更新认证状态
+watch(() => route.path, () => {
+  checkAuth()
+})
+
+// 组件挂载时检查认证状态
+onMounted(() => {
+  checkAuth()
+})
 </script>
 
 <style>
@@ -14,7 +36,7 @@ import MainLayout from './components/Layout/MainLayout.vue'
   margin: 0;
   padding: 0;
   height: 100vh;
-  width: 100%; /* 添加宽度100% */
+  width: 100%;
   overflow: hidden;
   display: flex;
   flex-direction: column;
